@@ -69,9 +69,9 @@ int main(int argc, char **argv){
     const char *msg = ph_about();
     printf(" %s\n", msg);
 
-    if (argc < 3){
+    if (argc < 2) {
 	printf("no input args\n");
-	printf("expected: \"test_imagephash [dir name] [dir_name]\"\n");
+	printf("expected: \"test_imagephash [dir name [dir_name]]\"\n");
 	exit(1);
     }
     const char *dir_name = argv[1];
@@ -93,17 +93,35 @@ int main(int argc, char **argv){
     char path[100];
     path[0] = '\0';
     while ((dir_entry = readdir(dir)) != 0){
-	if (strcmp(dir_entry->d_name,".") && strcmp(dir_entry->d_name,"..")){
+ 	if (strstr(dir_entry->d_name,"hash"))
+		continue;
+	if (strcmp(dir_entry->d_name,".") && strcmp(dir_entry->d_name,"..")) {
 	    strcat(path, dir_name);
 	    strcat(path, "/");
 	    strcat(path, dir_entry->d_name);
 	    if (ph_dct_imagehash(path, tmphash) < 0)  //calculate the hash
 		continue;
             dp = ph_malloc_imagepoint();              //store in structure with file name
-	    dp->id = dir_entry->d_name;
+	    dp->id = strdup(dir_entry->d_name);
 	    dp->hash = tmphash;
 	    hashlist1.push_back(*dp);
+            dp = ph_malloc_imagepoint();              //store in structure with file name
+	    dp->id = strdup(dir_entry->d_name);
+	    dp->hash = tmphash;
+	    hashlist2.push_back(*dp);
 	    i++;
+	    if (i % 100 == 0) 
+		fprintf(stderr,"%d",i);
+	    else
+		fprintf(stderr,".");
+	    fflush(stderr);
+            if (1) {
+		FILE *f;
+	    	strcat(path, ".hash");
+		f=fopen(path,"w");
+		fprintf(f,"%llu\n", tmphash);
+		fclose(f);
+	   } 
 	}
 	errno = 0;
         path[0]='\0';
@@ -116,6 +134,8 @@ int main(int argc, char **argv){
 
     sort(hashlist1.begin(),hashlist1.end(),cmp_lt_imp);
 
+#if 0
+    if (argc > 2){
     //second directory
     dir_entry = NULL;
     DIR *dir2 = opendir(dir_name2);
@@ -138,6 +158,9 @@ int main(int argc, char **argv){
 	    dp->hash = tmphash;
 	    hashlist2.push_back(*dp);
 	    i++;
+	    fprintf(stderr,".");
+	    if (i % 100 == 99) fprintf(stderr,"%d",i);
+		fflush(stderr);
 	}
 	errno = 0;
 	path[0] = '\0';
@@ -147,6 +170,7 @@ int main(int argc, char **argv){
 	printf("error reading directory\n");
 	exit(1);
     }
+#endif
 
     sort(hashlist2.begin(),hashlist2.end(),cmp_lt_imp);
 

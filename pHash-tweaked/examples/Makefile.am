@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src
+AM_CPPFLAGS= -I$(top_srcdir)/src
 noinst_PROGRAMS = test_texthash test_texthash2
 
 test_texthash_SOURCES = test_texthash.cpp
@@ -16,12 +16,14 @@ test_audio_LDADD = $(top_builddir)/src/libpHash.la
 endif
 
 if HAVE_IMAGE_HASH
-noinst_PROGRAMS += test_image test_mhimagehash
+noinst_PROGRAMS += test_image test_mhimagehash test_dirkx
 
 test_image_SOURCES = test_imagephash.cpp
 test_image_LDADD = $(top_builddir)/src/libpHash.la
 test_mhimagehash_SOURCES = test_mhimagehash.cpp
 test_mhimagehash_LDADD = $(top_builddir)/src/libpHash.la
+test_dirkx_SOURCES = test_dirkx.cpp
+test_dirkx_LDADD = $(top_builddir)/src/libpHash.la
 endif
 
 if HAVE_VIDEO_HASH

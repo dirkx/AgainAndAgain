@@ -25,6 +25,7 @@
 
 #include "cimgffmpeg.h"
 
+#define avformat_close_input(x) av_close_input_file(*(x))
 void vfinfo_close(VFInfo  *vfinfo){
     if (vfinfo->pFormatCtx != NULL){
 	avcodec_close(vfinfo->pCodecCtx);

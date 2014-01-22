@@ -41,7 +41,11 @@ int ph_num_threads()
 		size_t len; 
 
 		mib[0] = CTL_HW;
+#ifdef HW_NCPU
+		mib[1] = HW_NCPU;
+#else
 		mib[1] = HW_AVAILCPU;
+#endif
 
 		sysctl(mib, 2, &numCPU, &len, NULL, 0);
 

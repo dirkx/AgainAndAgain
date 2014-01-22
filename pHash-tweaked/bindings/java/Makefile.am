@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src
+AM_CPPFLAGS= -I$(top_srcdir)/src
 lib_LTLIBRARIES = libpHash-jni.la
 libpHash_jni_la_SOURCES = pHash-jni.cpp
 include_HEADERS = pHash-jni.h pHash_MVPTree.h
